@@ -45,7 +45,7 @@ export default function UsersPage() {
             className="mt-1 w-full rounded-xl border px-3 py-2"
             value={name}
             onChange={(event) => setName(event.target.value)}
-            placeholder="Ej: Juan Pérez"
+            placeholder={t('users.namePlaceholder')}
           />
         </label>
 
@@ -55,7 +55,7 @@ export default function UsersPage() {
             className="mt-1 w-full rounded-xl border px-3 py-2"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
-            placeholder="correo@example.com"
+            placeholder={t('users.emailPlaceholder')}
             type="email"
           />
         </label>

@@ -116,7 +116,7 @@ export default function ReservationsPage() {
 
       {message && <p className="mb-4 rounded-xl bg-slate-100 p-3 text-sm text-slate-700">{message}</p>}
       {loading && <p className="text-sm text-slate-500">{t('common.loading')}</p>}
-      {!selectedId && <p className="rounded-xl bg-slate-100 p-4 text-sm text-slate-500">Selecciona un libro o un usuario para consultar.</p>}
+      {!selectedId && <p className="rounded-xl bg-slate-100 p-4 text-sm text-slate-500">{t('reservations.selectBookOrUser')}</p>}
 
       {selectedId && (
         <div className="overflow-x-auto">
@@ -127,9 +127,9 @@ export default function ReservationsPage() {
                 <th className="py-2">{t('users.users')}</th>
                 <th className="py-2">{t('reservations.reservationDate')}</th>
                 <th className="py-2">{t('reservations.returnDateColumn')}</th>
-                <th className="py-2">Retornado</th>
+                <th className="py-2">{t('reservations.returnedAt')}</th>
                 <th className="py-2">{t('reservations.status')}</th>
-                <th className="py-2 text-right">Acción</th>
+                <th className="py-2 text-right">{t('reservations.action')}</th>
               </tr>
             </thead>
             <tbody>
@@ -156,7 +156,7 @@ export default function ReservationsPage() {
                         {t('reservations.returnBook')}
                       </button>
                     ) : (
-                      <span className="text-slate-400">Sin acción</span>
+                      <span className="text-slate-400">{t('reservations.noAction')}</span>
                     )}
                   </td>
                 </tr>

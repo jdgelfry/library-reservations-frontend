@@ -107,7 +107,7 @@ export default function HomePage() {
             value={selectedUserId}
             onChange={(event) => setSelectedUserId(event.target.value)}
           >
-            <option value="">{t('common.select')} {t('home.user').toLowerCase()}</option>
+            <option value="">{t('home.selectUser')}</option>
             {usersData?.users.map((user) => (
               <option key={user.id} value={user.id}>
                 {user.name} - {user.email}
@@ -134,7 +134,7 @@ export default function HomePage() {
           {saving ? t('common.loading') : t('home.reserve')}
         </button>
 
-        {message && <p className="mt-4 rounded-xl bg-slate-100 p-3 text-sm text-slate-700">{message}</p>}
+        {message && <p className="mt-4 rounded-xl bg-neutral-400 p-3 text-sm text-slate-700">{message}</p>}
       </form>
     </section>
   );

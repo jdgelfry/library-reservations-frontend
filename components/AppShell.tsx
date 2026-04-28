@@ -21,8 +21,8 @@ export function AppShell({ children }: { children: ReactNode }) {
       <header className="border-b bg-white shadow-sm">
         <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-4 md:flex-row md:items-center md:justify-between">
           <div>
-            <h1 className="text-xl font-bold">Biblioteca Grupo NEX</h1>
-            <p className="text-sm text-slate-500">Reservas de libros con Next.js, GraphQL, NestJS y Prisma</p>
+            <h1 className="text-xl font-bold">{t('nav.appTitle')}</h1>
+            <p className="text-sm text-slate-500">{t('nav.appSubtitle')}</p>
           </div>
           <nav className="flex flex-wrap items-center gap-2">
             {menu.map((item) => (
