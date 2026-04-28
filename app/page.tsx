@@ -5,8 +5,13 @@ import { FormEvent, useMemo, useState } from 'react';
 import { CREATE_RESERVATION, GET_AVAILABLE_BOOKS, GET_USERS } from '@/lib/graphql';
 import type { Book, User } from '@/lib/types';
 import { toEndOfDayIso } from '@/lib/date';
+import { useLanguage } from '@/lib/language-context';
+import { getTranslation } from '@/lib/translations';
 
 export default function HomePage() {
+  const { language } = useLanguage();
+  const t = (key: string) => getTranslation(language, key);
+
   const [selectedBookId, setSelectedBookId] = useState('');
   const [selectedUserId, setSelectedUserId] = useState('');
   const [returnDate, setReturnDate] = useState('');
@@ -29,7 +34,7 @@ export default function HomePage() {
     setMessage('');
 
     if (!selectedBookId || !selectedUserId || !returnDate) {
-      setMessage('Selecciona libro, usuario y fecha de devolución.');
+      setMessage(t('home.selectBookUserDate'));
       return;
     }
 
@@ -45,12 +50,12 @@ export default function HomePage() {
         },
       });
 
-      setMessage('Reserva creada correctamente.');
+      setMessage(t('home.reservationCreated'));
       setSelectedBookId('');
       setSelectedUserId('');
       setReturnDate('');
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : 'No se pudo crear la reserva.');
+      setMessage(error instanceof Error ? error.message : t('home.reservationFailed'));
     }
   }
 
@@ -59,10 +64,10 @@ export default function HomePage() {
       <div className="rounded-2xl border bg-white p-5 shadow-sm">
         <div className="mb-4 flex items-center justify-between gap-3">
           <div>
-            <h2 className="text-lg font-semibold">Libros disponibles</h2>
-            <p className="text-sm text-slate-500">Solo aparecen los libros sin reserva activa.</p>
+            <h2 className="text-lg font-semibold">{t('home.availableBooks')}</h2>
+            <p className="text-sm text-slate-500">{t('home.onlyActiveBooks')}</p>
           </div>
-          {(loadingBooks || loadingUsers) && <span className="text-sm text-slate-500">Cargando...</span>}
+          {(loadingBooks || loadingUsers) && <span className="text-sm text-slate-500">{t('common.loading')}</span>}
         </div>
 
         <div className="grid gap-3 md:grid-cols-2">
@@ -77,32 +82,32 @@ export default function HomePage() {
             >
               <h3 className="font-semibold">{book.title}</h3>
               <p className="text-sm text-slate-600">{book.author}</p>
-              <p className="mt-2 text-xs text-slate-400">ISBN: {book.isbn}</p>
+              <p className="mt-2 text-xs text-slate-400">{t('home.isbn')}: {book.isbn}</p>
             </button>
           ))}
 
           {booksData?.availableBooks.length === 0 && !loadingBooks && (
             <p className="col-span-full rounded-xl bg-slate-100 p-4 text-sm text-slate-500">
-              No hay libros disponibles en este momento.
+              {t('home.noAvailableBooks')}
             </p>
           )}
         </div>
       </div>
 
       <form onSubmit={handleReserve} className="rounded-2xl border bg-white p-5 shadow-sm">
-        <h2 className="text-lg font-semibold">Reservar libro</h2>
+        <h2 className="text-lg font-semibold">{t('home.reserveBook')}</h2>
         <p className="mb-4 text-sm text-slate-500">
-          Libro seleccionado: <strong>{selectedBook?.title ?? 'Ninguno'}</strong>
+          {t('home.selectedBook')} <strong>{selectedBook?.title ?? t('home.none')}</strong>
         </p>
 
         <label className="mb-3 block text-sm font-medium">
-          Usuario
+          {t('home.user')}
           <select
             className="mt-1 w-full rounded-xl border px-3 py-2"
             value={selectedUserId}
             onChange={(event) => setSelectedUserId(event.target.value)}
           >
-            <option value="">Seleccionar usuario</option>
+            <option value="">{t('common.select')} {t('home.user').toLowerCase()}</option>
             {usersData?.users.map((user) => (
               <option key={user.id} value={user.id}>
                 {user.name} - {user.email}
@@ -112,7 +117,7 @@ export default function HomePage() {
         </label>
 
         <label className="mb-4 block text-sm font-medium">
-          Fecha de devolución
+          {t('home.returnDate')}
           <input
             className="mt-1 w-full rounded-xl border px-3 py-2"
             type="date"
@@ -126,7 +131,7 @@ export default function HomePage() {
           disabled={saving}
           type="submit"
         >
-          {saving ? 'Reservando...' : 'Reservar'}
+          {saving ? t('common.loading') : t('home.reserve')}
         </button>
 
         {message && <p className="mt-4 rounded-xl bg-slate-100 p-3 text-sm text-slate-700">{message}</p>}

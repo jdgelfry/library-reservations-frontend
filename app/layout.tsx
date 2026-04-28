@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { Providers } from './providers';
 import { AppShell } from '@/components/AppShell';
+import { LanguageProvider } from '@/lib/language-context';
 
 export const metadata: Metadata = {
   title: 'Biblioteca Grupo NEX',
@@ -12,9 +13,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="es">
       <body>
-        <Providers>
-          <AppShell>{children}</AppShell>
-        </Providers>
+        <LanguageProvider>
+          <Providers>
+            <AppShell>{children}</AppShell>
+          </Providers>
+        </LanguageProvider>
       </body>
     </html>
   );

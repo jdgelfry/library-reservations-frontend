@@ -4,6 +4,8 @@ import { useMutation, useQuery } from '@apollo/client';
 import { FormEvent, useState } from 'react';
 import { CREATE_BOOK, DELETE_BOOK, GET_BOOKS, UPDATE_BOOK } from '@/lib/graphql';
 import type { Book } from '@/lib/types';
+import { useLanguage } from '@/lib/language-context';
+import { getTranslation } from '@/lib/translations';
 
 type BookForm = {
   id?: string;
@@ -16,6 +18,9 @@ type BookForm = {
 const emptyForm: BookForm = { title: '', author: '', isbn: '', publishedYear: '' };
 
 export default function BooksPage() {
+  const { language } = useLanguage();
+  const t = (key: string) => getTranslation(language, key);
+
   const [form, setForm] = useState<BookForm>(emptyForm);
   const [message, setMessage] = useState('');
 
@@ -45,14 +50,14 @@ export default function BooksPage() {
     try {
       if (isEditing) {
         await updateBook({ variables: { input: { id: form.id, ...input } } });
-        setMessage('Libro actualizado correctamente.');
+        setMessage(t('books.bookUpdated'));
       } else {
         await createBook({ variables: { input } });
-        setMessage('Libro creado correctamente.');
+        setMessage(t('books.bookCreated'));
       }
       setForm(emptyForm);
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : 'No se pudo guardar el libro.');
+      setMessage(error instanceof Error ? error.message : t('books.bookFailed'));
     }
   }
 
@@ -60,9 +65,9 @@ export default function BooksPage() {
     setMessage('');
     try {
       await deleteBook({ variables: { id } });
-      setMessage('Libro eliminado correctamente.');
+      setMessage(t('books.bookDeleted'));
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : 'No se pudo eliminar el libro.');
+      setMessage(error instanceof Error ? error.message : t('books.deleteFailed'));
     }
   }
 
@@ -79,25 +84,25 @@ export default function BooksPage() {
   return (
     <section className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
       <form onSubmit={handleSubmit} className="rounded-2xl border bg-white p-5 shadow-sm">
-        <h2 className="mb-4 text-lg font-semibold">{isEditing ? 'Editar libro' : 'Crear libro'}</h2>
+        <h2 className="mb-4 text-lg font-semibold">{isEditing ? t('books.editBook') : t('books.createBook')}</h2>
 
         <label className="mb-3 block text-sm font-medium">
-          Título
+          {t('books.title')}
           <input className="mt-1 w-full rounded-xl border px-3 py-2" value={form.title} onChange={(e) => setField('title', e.target.value)} />
         </label>
 
         <label className="mb-3 block text-sm font-medium">
-          Autor
+          {t('books.author')}
           <input className="mt-1 w-full rounded-xl border px-3 py-2" value={form.author} onChange={(e) => setField('author', e.target.value)} />
         </label>
 
         <label className="mb-3 block text-sm font-medium">
-          ISBN
+          {t('books.isbn')}
           <input className="mt-1 w-full rounded-xl border px-3 py-2" value={form.isbn} onChange={(e) => setField('isbn', e.target.value)} />
         </label>
 
         <label className="mb-4 block text-sm font-medium">
-          Año de publicación
+          {t('books.publishedYear')}
           <input
             className="mt-1 w-full rounded-xl border px-3 py-2"
             value={form.publishedYear}
@@ -108,11 +113,11 @@ export default function BooksPage() {
 
         <div className="flex gap-2">
           <button className="flex-1 rounded-xl bg-slate-900 px-4 py-2 font-semibold text-white hover:bg-slate-700 disabled:bg-slate-400" disabled={saving} type="submit">
-            {saving ? 'Guardando...' : isEditing ? 'Actualizar' : 'Crear'}
+            {saving ? t('common.loading') : isEditing ? t('common.update') : t('common.create')}
           </button>
           {isEditing && (
             <button className="rounded-xl border px-4 py-2 font-semibold" type="button" onClick={() => setForm(emptyForm)}>
-              Cancelar
+              {t('common.cancel')}
             </button>
           )}
         </div>
@@ -121,18 +126,18 @@ export default function BooksPage() {
       </form>
 
       <div className="rounded-2xl border bg-white p-5 shadow-sm">
-        <h2 className="mb-4 text-lg font-semibold">Libros</h2>
-        {loading && <p className="text-sm text-slate-500">Cargando libros...</p>}
+        <h2 className="mb-4 text-lg font-semibold">{t('books.books')}</h2>
+        {loading && <p className="text-sm text-slate-500">{t('common.loading')}</p>}
 
         <div className="overflow-x-auto">
           <table className="w-full min-w-[760px] text-left text-sm">
             <thead>
               <tr className="border-b text-slate-500">
-                <th className="py-2">Título</th>
-                <th className="py-2">Autor</th>
-                <th className="py-2">ISBN</th>
-                <th className="py-2">Año</th>
-                <th className="py-2 text-right">Acciones</th>
+                <th className="py-2">{t('books.bookTitle')}</th>
+                <th className="py-2">{t('books.bookAuthor')}</th>
+                <th className="py-2">{t('books.bookIsbn')}</th>
+                <th className="py-2">{t('books.bookYear')}</th>
+                <th className="py-2 text-right">{t('books.actions')}</th>
               </tr>
             </thead>
             <tbody>
@@ -144,10 +149,10 @@ export default function BooksPage() {
                   <td className="py-3 text-slate-600">{book.publishedYear ?? '-'}</td>
                   <td className="py-3 text-right">
                     <button className="mr-2 rounded-lg border px-3 py-1" onClick={() => handleEdit(book)} type="button">
-                      Editar
+                      {t('common.edit')}
                     </button>
                     <button className="rounded-lg border border-red-200 px-3 py-1 text-red-600" onClick={() => handleDelete(book.id)} type="button">
-                      Eliminar
+                      {t('common.delete')}
                     </button>
                   </td>
                 </tr>
