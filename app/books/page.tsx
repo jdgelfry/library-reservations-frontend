@@ -2,7 +2,7 @@
 
 import { useMutation, useQuery } from '@apollo/client';
 import { FormEvent, useState } from 'react';
-import { CREATE_BOOK, DELETE_BOOK, GET_BOOKS, UPDATE_BOOK } from '@/lib/graphql';
+import { CREATE_BOOK, DELETE_BOOK, GET_AVAILABLE_BOOKS, GET_BOOKS, UPDATE_BOOK } from '@/lib/graphql';
 import type { Book } from '@/lib/types';
 import { useLanguage } from '@/lib/language-context';
 import { getTranslation } from '@/lib/translations';
@@ -25,9 +25,10 @@ export default function BooksPage() {
   const [message, setMessage] = useState('');
 
   const { data, loading } = useQuery<{ books: Book[] }>(GET_BOOKS);
-  const [createBook, { loading: creating }] = useMutation(CREATE_BOOK, { refetchQueries: [{ query: GET_BOOKS }] });
-  const [updateBook, { loading: updating }] = useMutation(UPDATE_BOOK, { refetchQueries: [{ query: GET_BOOKS }] });
-  const [deleteBook] = useMutation(DELETE_BOOK, { refetchQueries: [{ query: GET_BOOKS }] });
+  const refetchQueries = [{ query: GET_BOOKS }, { query: GET_AVAILABLE_BOOKS }]; // Para mantener la lista de libros disponibles actualizada después de crear, actualizar o eliminar un libro
+  const [createBook, { loading: creating }] = useMutation(CREATE_BOOK, { refetchQueries });
+  const [updateBook, { loading: updating }] = useMutation(UPDATE_BOOK, { refetchQueries });
+  const [deleteBook] = useMutation(DELETE_BOOK, { refetchQueries });
 
   const isEditing = Boolean(form.id);
   const saving = creating || updating;
