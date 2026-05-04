@@ -17,7 +17,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
+    <div className="flex min-h-screen flex-col bg-slate-50 text-slate-900">
       <header className="border-b bg-white shadow-sm">
         <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-4 md:flex-row md:items-center md:justify-between">
           <div>
@@ -59,7 +59,10 @@ export function AppShell({ children }: { children: ReactNode }) {
           </nav>
         </div>
       </header>
-      <main className="mx-auto max-w-6xl px-4 py-6">{children}</main>
+      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6">{children}</main>
+      <footer className="border-t bg-white px-4 py-3 text-center text-sm text-slate-500">
+        <p>Biblioteca Grupo NEX - Prueba técnica Full Stack Developer</p>
+      </footer>
     </div>
   );
 }
